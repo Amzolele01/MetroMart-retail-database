@@ -63,10 +63,11 @@ The repository structure will expand as the project progresses.
 
 ## 6. Tools and Technologies
 
+- **Google Docs:** Preliminary documentation, research notes, drafting, and planning.
 - **Google Sheets:** Data profiling, preliminary investigation, spreadsheet-based validation, and supporting calculations.
 - **PostgreSQL:** Relational database development and data management.
 - **SQL:** Data querying, validation, transformation, and analysis.
-- **GitHub:** Version control, project documentation, and source code management.
+- **GitHub:** Central project documentation, version control, and source code management.
 
 ## 7. Documentation
 
