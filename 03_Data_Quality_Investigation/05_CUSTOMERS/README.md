@@ -1,4 +1,4 @@
-# Phase 3 — Data Quality Investigation: Customers Dataset
+# Data Quality Investigation: Customers Dataset
 
 ## 1. Dataset Overview
 
