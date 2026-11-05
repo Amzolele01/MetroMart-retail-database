@@ -145,6 +145,57 @@ The 20 pairs shared:
 
 The main difference was the customer ID format: one record used a standard ID, while the other used a legacy-style ID.
 
+### 5.1.1 Records with Duplicated Email Addresses
+
+The following 40 records were identified through an exact email-match investigation. Each email address appears in two customer records, creating 20 potential duplicate pairs.
+
+| Customer ID | Email |
+|---|---|
+| C0035 | david.dlamini35@example.com |
+| C9X012 | david.dlamini35@example.com |
+| C0047 | sipho.smith47@example.com |
+| C9X009 | sipho.smith47@example.com |
+| C0110 | nomsa.smith110@example.com |
+| C9X019 | nomsa.smith110@example.com |
+| C0129 | sipho.dlamini129@example.com |
+| C9X011 | sipho.dlamini129@example.com |
+| C0142 | karabo.pillay142@example.com |
+| C9X003 | karabo.pillay142@example.com |
+| C0152 | david.van wyk152@example.com |
+| C9X006 | david.van wyk152@example.com |
+| C0281 | naledi.molefe281@example.com |
+| C9X013 | naledi.molefe281@example.com |
+| C0400 | nomsa.khumalo400@example.com |
+| C9X017 | nomsa.khumalo400@example.com |
+| C0458 | nomsa.nkosi458@example.com |
+| C9X001 | nomsa.nkosi458@example.com |
+| C0460 | nomsa.williams460@example.com |
+| C9X000 | nomsa.williams460@example.com |
+| C0595 | mpho.jacobs595@example.com |
+| C9X014 | mpho.jacobs595@example.com |
+| C0669 | karabo.mabena669@example.com |
+| C9X004 | karabo.mabena669@example.com |
+| C0695 | sibusiso.mthembu695@example.com |
+| C9X018 | sibusiso.mthembu695@example.com |
+| C0722 | zanele.mabena722@example.com |
+| C9X015 | zanele.mabena722@example.com |
+| C0751 | brian.mokoena751@example.com |
+| C9X008 | brian.mokoena751@example.com |
+| C0831 | sibusiso.dlamini831@example.com |
+| C9X007 | sibusiso.dlamini831@example.com |
+| C1012 | kagiso.naidoo1012@example.com |
+| C9X005 | kagiso.naidoo1012@example.com |
+| C1023 | zanele.jacobs1023@example.com |
+| C9X002 | zanele.jacobs1023@example.com |
+| C1129 | brian.ndlovu1129@example.com |
+| C9X016 | brian.ndlovu1129@example.com |
+| C1133 | naledi.williams1133@example.com |
+| C9X010 | naledi.williams1133@example.com |
+
+**Observation:** Every duplicated email address is shared between one standard-format customer ID and one legacy-style customer ID.
+
+**Investigation outcome:** These records remain classified as potential duplicate customer records pending independent verification. No records have been removed or merged.
+
 ### 5.2 Potential Duplicate Records
 
 The matching pattern provides strong evidence of potential duplicate customer records.
