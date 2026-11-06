@@ -268,3 +268,134 @@ The most significant finding is the presence of 20 potential duplicate customer 
 The investigation also established that the 25 missing phone numbers cannot currently be recovered using the available customer records.
 
 No changes were made to the original source data. All identified issues and observations have been retained for consideration during Phase 4 — Data Cleaning and Standardisation.
+
+
+## 10. Investigation Methods and Google Sheets Formulas
+
+Google Sheets was used to perform data profiling, identify data-quality issues and validate investigation findings.
+
+The following formulas were used during the Customers dataset investigation.
+
+### 10.1 Missing Values
+
+**Purpose:** Identify blank cells in each column.
+
+```excel
+=COUNTBLANK(A2:A1221)
+```
+
+The formula was adjusted for each column to determine its missing-value count.
+
+### 10.2 Customer ID Validation
+
+**Check for embedded header values:**
+
+```excel
+=COUNTIF(A2:A1221,"customer_id")
+```
+
+**Count standard-format IDs:**
+
+```excel
+=COUNTIF(A2:A1221,"C????")
+```
+
+**Count legacy-style IDs:**
+
+```excel
+=COUNTIF(A2:A1221,"C9X???")
+```
+
+**Check for duplicate IDs:**
+
+```excel
+=COUNTA(A2:A1221)-COUNTUNIQUE(A2:A1221)
+```
+
+### 10.3 Customer Name Investigation
+
+**Count unique full names:**
+
+```excel
+=COUNTUNIQUE(B2:B1221)
+```
+
+**Calculate additional occurrences of repeated names:**
+
+```excel
+=COUNTA(B2:B1221)-COUNTUNIQUE(B2:B1221)
+```
+
+**Extract repeated names:**
+
+```excel
+=SORT(UNIQUE(FILTER(B2:B1221,COUNTIF(B2:B1221,B2:B1221)>1)))
+```
+
+**Calculate the frequency of each unique name:**
+
+```excel
+=COUNTIF($B$2:$B$1221,J2)
+```
+
+### 10.4 Duplicate Email Investigation
+
+**Generate a unique email list:**
+
+```excel
+=SORT(UNIQUE(FILTER(D2:D1221,D2:D1221<>"")))
+```
+
+**Calculate email frequency:**
+
+```excel
+=COUNTIF($D$2:$D$1221,L2)
+```
+
+**Retrieve all customer records associated with duplicated email addresses:**
+
+```excel
+=FILTER(A2:F1221,ISNUMBER(MATCH(D2:D1221,FILTER(L2:L1221,M2:M1221>1),0)))
+```
+
+### 10.5 Email Formatting Investigation
+
+**Identify email addresses containing spaces:**
+
+```excel
+=FILTER(A2:F1221,REGEXMATCH(D2:D1221,"\s"))
+```
+
+**Count email addresses containing spaces:**
+
+```excel
+=COUNTIF(D2:D1221,"* *")
+```
+
+### 10.6 Missing Phone Number Investigation
+
+**Extract records with missing phone numbers:**
+
+```excel
+=FILTER(A2:F1221,C2:C1221="")
+```
+
+**Identify missing-phone records whose full names appear elsewhere:**
+
+```excel
+=FILTER(A2:F1221,(C2:C1221="")*(COUNTIF(B2:B1221,B2:B1221)>1))
+```
+
+**Retrieve other records with matching names and populated phone numbers:**
+
+```excel
+=FILTER(A2:F1221,(C2:C1221<>"")*ISNUMBER(MATCH(B2:B1221,FILTER(B2:B1221,C2:C1221=""),0)))
+```
+
+These checks supported the investigation into whether existing customer records could provide evidence for recovering missing phone numbers.
+
+### 10.7 Formula Usage and Data Integrity
+
+All formulas were used for investigation and validation purposes. They did not modify the original `customers.csv` source data.
+
+The results were reviewed before classifying issues or making data-quality decisions.
