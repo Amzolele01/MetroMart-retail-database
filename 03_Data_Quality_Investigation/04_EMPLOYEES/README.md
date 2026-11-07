@@ -269,12 +269,27 @@ No changes were made to the original dataset.
 
 No corrective transformations were required based on the investigation results.
 
+**Additional Employee ID Validation**
+
+The employee identifiers were further examined for formatting consistency and sequence completeness.
+
+| Check | Formula | Result |
+|---|---|---:|
+| Leading/trailing spaces | `=SUM(ARRAYFORMULA(N(A2:A61<>TRIM(A2:A61))))` | 0 |
+| ID format consistency | `=SUM(ARRAYFORMULA(N(NOT(REGEXMATCH(A2:A61,"^E[0-9]{3}$")))))` | 0 |
+| Missing IDs in expected sequence | `=SUM(ARRAYFORMULA(N(COUNTIF(A2:A61,"E"&TEXT(SEQUENCE(60),"000"))=0)))` | 0 |
+
+**Finding:** All 60 employee identifiers follow the expected E001–E060 format. No leading or trailing spaces, invalid formats or missing identifiers within the expected sequence were detected.
+
+
 ## 8. Final Conclusion
 
-The Phase 3 investigation of `employees.csv` established that the dataset passed the examined checks for employee identifier uniqueness, employee name completeness and formatting, store assignment completeness, store referential integrity, and employee role completeness and formatting.
+The Phase 3 investigation of `employees.csv` established that the dataset passed the examined checks for employee identifier uniqueness, formatting and sequence completeness, employee name completeness and formatting, store assignment completeness, store referential integrity, and employee role completeness and formatting.
 
-The investigation also identified repeated employee names, which were verified against employee identifiers and determined not to represent confirmed duplicate records.
+Repeated employee names were identified and verified against employee identifiers. These records represent separate employees rather than confirmed duplicates.
 
-No confirmed data quality defects requiring corrective action were identified.
+Additional validation confirmed that no complete duplicate employee records exist and that all 60 employee identifiers follow the expected E001–E060 sequence.
+
+No confirmed data quality defects requiring corrective action were identified. No changes were made to the original dataset.
 
 **Final Status: Investigation Completed — No Confirmed Defects Identified.**
