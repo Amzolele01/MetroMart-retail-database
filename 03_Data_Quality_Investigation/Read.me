@@ -1,1 +1,412 @@
+# Phase 3: Data Quality Investigation — Overall Report
 
+## 1. Introduction
+
+Phase 3 focused on investigating the quality, consistency, completeness, and reliability of the source datasets for the MetroMart Retail Database project.
+
+The purpose of this phase was to understand the condition of the supplied data before making any cleaning, transformation, or database implementation decisions.
+
+The investigation covered individual dataset structures, missing values, duplicate records, identifier consistency, data formats, unusual values, and relationships between datasets.
+
+Google Sheets was used to conduct the investigations on working copies of the source files. Google Docs was used to prepare and consolidate the investigation documentation.
+
+The original source files were preserved and were not modified during this phase.
+
+## 2. Objectives
+
+The main objectives of Phase 3 were to:
+
+- Understand the structure and contents of each source dataset.
+- Identify missing, duplicated, inconsistent, and unusual values.
+- Examine identifier formats and uniqueness.
+- Validate relationships between related datasets.
+- Identify records that may affect data integrity.
+- Distinguish confirmed data-quality issues from observations requiring further clarification.
+- Document findings to guide the cleaning and validation activities in Phase 4.
+
+## 3. Datasets Investigated
+
+Seven source datasets were included in the investigation.
+
+| Dataset | Records | Attributes |
+|---|---:|---:|
+| customers.csv | 1,220 | 6 |
+| products.csv | 20 | 5 |
+| stores.csv | 5 | 4 |
+| employees.csv | 60 | 4 |
+| sales_2023_2025.csv | 100,000 | 10 |
+| customer_export_legacy.csv | 350 | 4 |
+| returns.csv | 1,800 | 7 |
+| **Total** | **103,455** | — |
+
+The investigation covered current customer information, legacy customer information, product and store reference data, employee records, sales transactions, and returns.
+
+The legacy customer export was investigated separately because it provides additional customer information and was useful when validating customer references in the Sales and Returns datasets.
+
+## 4. Investigation Methodology
+
+A consistent investigation approach was followed across the datasets. The checks were adapted where necessary to suit the structure and purpose of each file.
+
+### 4.1 Dataset Structure
+
+Each dataset was examined to establish:
+
+- Number of records.
+- Number of attributes.
+- Attribute names.
+- General purpose of each attribute.
+- Types of values stored in each attribute.
+
+### 4.2 Missing Values
+
+Attributes were checked for blank and missing values.
+
+Where missing values were identified, their distribution and potential significance were investigated.
+
+Missing values were not automatically filled because the investigation did not always provide sufficient evidence to recover the original information.
+
+### 4.3 Duplicate Records and Identifier Uniqueness
+
+The investigation examined:
+
+- Duplicate primary identifiers.
+- Repeated transaction or reference identifiers.
+- Exact duplicate records.
+- Repeated names and other descriptive values.
+
+Repeated names were not automatically treated as duplicate people or records because different individuals can share the same name.
+
+### 4.4 Data Consistency and Validity
+
+Values were examined for:
+
+- Inconsistent spelling and capitalization.
+- Leading or trailing whitespace.
+- Unexpected formats.
+- Unusual numeric values.
+- Invalid or unexpected dates.
+- Values that differed from supplied reference information.
+
+Potential inconsistencies were documented without automatically assuming the correct replacement value.
+
+### 4.5 Cross-Dataset Validation
+
+Related datasets were compared to investigate whether identifiers and relationships were consistent.
+
+The checks included:
+
+- Customer references between Sales, Returns, Customers, and the legacy customer export.
+- Product references between Sales, Returns, and Products.
+- Store references between Sales, Employees, and Stores.
+- Employee references between Sales and Employees.
+- Transaction and product consistency between Sales and Returns.
+
+### 4.6 Documentation
+
+Findings were recorded in individual dataset investigation documents.
+
+The documentation distinguishes between confirmed findings, potential issues, and observations that require business clarification.
+
+No source data was altered during Phase 3.
+
+## 5. Individual Dataset Investigation Results
+
+### 5.1 Customers Dataset
+
+**Source:** `customers.csv`
+
+The Customers dataset contains 1,220 records and six attributes.
+
+Key findings:
+
+- 25 missing phone numbers were identified.
+- All other attributes had no missing values.
+- All 1,220 customer IDs were unique.
+- The dataset contained 225 distinct customer names, with repeated names across multiple customer IDs.
+- Twenty email addresses were duplicated across 40 records.
+- The duplicated email records were examined and showed matching names, cities, provinces, and phone numbers after accounting for observed phone-number formatting differences.
+- Eighty email values contained internal whitespace associated with the surname pattern `van wyk`.
+- City labels included both `JHB` and `Johannesburg`, as well as capitalization variation in `RANDburg` and `Randburg`.
+- Phone-number formatting differences were observed between standard and legacy-style customer identifiers.
+
+The duplicated email addresses were documented as potential duplicate customer records, not confirmed duplicates.
+
+No missing phone numbers were filled because no reliable recovery source was established.
+
+### 5.2 Products Dataset
+
+**Source:** `products.csv`
+
+The Products dataset contains 20 records and five attributes.
+
+Key findings:
+
+- No missing values were identified.
+- All 20 product IDs were unique.
+- All product names were unique.
+- No leading or trailing whitespace was identified in product names or identifiers.
+- All unit prices were numeric and positive.
+- Unit prices ranged from R39 to R7,499.
+- Category values showed spelling and capitalization inconsistencies.
+- The supplied category reference contained six category values.
+- Some product categories did not match the supplied reference.
+- Three subcategories appeared under more than one category.
+
+Several products were flagged for possible category inconsistency or misclassification.
+
+The investigation did not establish an authoritative correction for these records, so category changes were deferred.
+
+### 5.3 Stores Dataset
+
+**Source:** `stores.csv`
+
+The Stores dataset contains five records and four attributes.
+
+Key findings:
+
+- No missing values were identified.
+- All store identifiers were unique.
+- All store names were unique.
+- All five store identifiers were referenced in the Employees and Sales datasets.
+- All stores were located in Gauteng.
+- Four records used `Johannesburg`, while one used `JHB`.
+
+The location difference was documented as a standardisation observation.
+
+Cross-dataset validation confirmed that all 60 employee records had valid store references and all 100,000 Sales records referenced an existing store.
+
+### 5.4 Employees Dataset
+
+**Source:** `employees.csv`
+
+The Employees dataset contains 60 records and four attributes.
+
+Key findings:
+
+- No missing values were identified.
+- All 60 employee IDs were unique.
+- Employee identifiers followed the observed E001–E060 sequence.
+- Fifty distinct employee names were identified.
+- Nine names appeared more than once.
+- Repeated names belonged to different employee IDs and were not treated as duplicate employees.
+- All employee store assignments matched an existing store.
+- Four distinct employee roles were identified: Cashier, Sales Assistant, Store Manager, and Store Supervisor.
+
+Cross-dataset validation confirmed that all Sales employee references were valid.
+
+### 5.5 Sales Dataset
+
+**Source:** `sales_2023_2025.csv`
+
+The Sales dataset contains 100,000 records and ten attributes.
+
+Key findings:
+
+- No missing or whitespace-only values were identified.
+- All transaction IDs were unique.
+- Transaction dates were valid and fell within the 2023–2025 reporting period.
+- Store, employee, and product references were valid.
+- Eighty-seven Sales records referenced customer ID `C0012`, which was absent from both available customer datasets.
+- Ten records contained negative quantities.
+- Six records contained a discount value of 1.25.
+- Sixteen records did not match the original expected amount calculation using quantity, unit price, and discount.
+
+The ten negative-quantity records were investigated separately. Only one had a corresponding Returns record.
+
+An absolute-quantity comparison was also conducted. Four of the ten negative-quantity records matched the recalculated amount, while six did not.
+
+The six discount values of 1.25 were also identified as unusual because they exceed the conventional 0–1 range for percentage discounts.
+
+The investigation did not establish the business meaning of negative quantities or the intended discount recording rules. These issues were documented for further clarification.
+
+### 5.6 Legacy Customer Export
+
+**Source:** `customer_export_legacy.csv`
+
+The legacy customer export contains 350 records and four attributes.
+
+Key findings:
+
+- No missing values were identified.
+- All 350 customer identifiers were unique.
+- All identifiers passed the tested `C????` pattern.
+- The dataset contained 182 distinct names.
+- Repeated names were observed across different customer IDs.
+- All 350 contact numbers were unique and numeric.
+- All contact numbers contained nine digits.
+- The missing leading zero pattern commonly associated with South African mobile numbers was observed, but no corrections were made.
+- Seven city values were identified, with no leading or trailing whitespace.
+
+The legacy export was also used to investigate customer references from the Sales dataset.
+
+Of the 848 distinct Sales customer IDs absent from the legacy export, the majority were subsequently checked against the main Customers dataset. Only `C0012` was absent from both customer datasets.
+
+### 5.7 Returns Dataset
+
+**Source:** `returns.csv`
+
+The Returns dataset contains 1,800 records and seven attributes.
+
+Key findings:
+
+- No missing values were identified.
+- All return IDs were unique.
+- All transaction IDs were unique within the Returns dataset.
+- No exact duplicate records were identified.
+- All returned quantities were positive numeric values.
+- Eight return quantities exceeded the quantities in their corresponding Sales transactions.
+- Nineteen return dates fell in 2026, outside the Sales reporting period.
+- All return dates were valid and occurred on or after their corresponding transaction dates.
+- Four return reasons were identified.
+- All transaction references matched existing Sales transactions.
+- All product references matched existing Products records.
+- Two return records referenced customer ID `C0012`, which was absent from both customer datasets.
+
+The Returns investigation also examined the ten negative-quantity Sales transactions.
+
+One matching Returns record was confirmed:
+
+`R01359` → `T0035854`
+
+The Sales record contained a quantity of -3, while the Returns record contained a returned quantity of 1. This confirms a relationship between the records but does not establish that negative Sales quantities represent returns.
+
+## 6. Cross-Dataset Investigation Findings
+
+Cross-dataset validation was important because individual datasets could appear complete while still containing identifiers that could not be resolved against their related datasets.
+
+The following findings were established.
+
+### 6.1 Customer References
+
+The Sales and Returns datasets were compared against both available customer datasets.
+
+- Sales contained 87 records referencing customer ID `C0012`.
+- Returns contained two records referencing `C0012`.
+- `C0012` was not found in `customers.csv`.
+- `C0012` was not found in `customer_export_legacy.csv`.
+
+This is a confirmed unresolved customer reference affecting both Sales and Returns.
+
+### 6.2 Store References
+
+All five store IDs in `stores.csv` were found in the Sales and Employees datasets.
+
+- Employee-to-Store references: 60 valid.
+- Sales-to-Store references: 100,000 valid.
+
+No unmatched store references were identified.
+
+### 6.3 Employee References
+
+All Sales employee references were checked against the Employees dataset.
+
+No unmatched employee references were identified.
+
+### 6.4 Product References
+
+All Sales and Returns product references were checked against `products.csv`.
+
+- Sales product references: all valid.
+- Returns product references: all valid.
+- Returns-to-Sales product consistency: no mismatches identified.
+
+### 6.5 Sales and Returns Relationship
+
+All 1,800 Returns transaction IDs matched existing Sales transactions.
+
+The comparison also identified:
+
+- Eight return quantities greater than their corresponding sales quantities.
+- One Returns record associated with a negative-quantity Sales transaction.
+- Nine negative-quantity Sales transactions without a matching Returns record.
+
+These findings require clarification of the source system's transaction and return recording rules.
+
+## 7. Consolidated Data Quality Findings
+
+The investigation identified several categories of findings across the seven datasets.
+
+| Data Quality Area | Main Findings |
+|---|---|
+| Missing values | 25 missing phone numbers in Customers; no missing values in the other six datasets |
+| Identifier uniqueness | No duplicate primary identifiers identified in the individual datasets |
+| Exact duplicates | No exact duplicate records identified in Returns |
+| Repeated descriptive values | Repeated customer and employee names; not automatically treated as duplicates |
+| Formatting inconsistencies | Customer phone numbers, email whitespace, category labels, and city labels |
+| Reference integrity | Customer ID C0012 unresolved in Sales and Returns |
+| Numeric anomalies | Negative Sales quantities, discount values of 1.25, and return quantities exceeding sales quantities |
+| Date observations | Nineteen Returns records dated in 2026 |
+| Potential classification issues | Product category inconsistencies and possible misclassification |
+| Business-rule uncertainty | Meaning of negative Sales quantities, discount rules, and return quantity recording |
+
+## 8. Issues Requiring Attention in Phase 4
+
+The investigation established several issues that must be considered before cleaning and transforming the data.
+
+### 8.1 Unresolved Customer Reference
+
+Customer ID `C0012` is referenced by 87 Sales records and two Returns records but does not exist in either available customer dataset.
+
+A decision is required on how these records should be represented in the database without inventing missing customer information.
+
+### 8.2 Missing Customer Phone Numbers
+
+Twenty-five customer records have missing phone numbers.
+
+These values should remain missing unless reliable supporting information becomes available.
+
+### 8.3 Potential Duplicate Customer Records
+
+Repeated customer names and duplicated email addresses were identified.
+
+The evidence should be reviewed before deciding whether any records represent duplicate customers.
+
+### 8.4 Product Category Inconsistencies
+
+Some product category values do not match the supplied category reference.
+
+An approved category mapping or classification rule is needed before standardisation.
+
+### 8.5 Location Standardisation
+
+The differences between `JHB`, `Johannesburg`, `RANDburg`, and `Randburg` should be considered when defining location standardisation rules.
+
+### 8.6 Negative Sales Quantities
+
+Ten Sales records contain negative quantities.
+
+The source system's meaning and calculation rules need to be clarified before deciding how these records should be handled.
+
+### 8.7 Discount Values
+
+Six Sales records contain a discount value of 1.25.
+
+The expected discount representation and permitted range should be established before applying corrections.
+
+### 8.8 Returns Quantity Differences
+
+Eight Returns records contain returned quantities greater than the corresponding Sales quantities.
+
+The business rules governing partial, multiple, or otherwise unusual returns should be clarified.
+
+### 8.9 Returns Outside the Sales Reporting Period
+
+Nineteen Returns records are dated in 2026, while the Sales dataset covers 2023–2025.
+
+These records should not automatically be removed. Their treatment should be considered in relation to the database's reporting scope and the original transaction dates.
+
+## 9. Phase 3 Outcome
+
+Phase 3 successfully established the structure and current data quality condition of all seven supplied datasets.
+
+The investigation identified missing values, formatting inconsistencies, unusual numeric values, potential duplicate customer information, unresolved customer references, and issues requiring clarification of business rules.
+
+Cross-dataset validation also established that store, employee, and product relationships were consistent across the relevant datasets, while customer ID `C0012` remained unresolved.
+
+All findings were documented in individual dataset investigation reports and consolidated in this overall report.
+
+No cleaning, transformation, or modification of the original source data was performed during this phase.
+
+## 10. Transition to Phase 4: Data Cleaning and Validation
+
+With the
