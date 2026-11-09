@@ -1,0 +1,61 @@
+employee_id,employee_name,store_id,role
+E001,Ayanda Mokoena,S004,Sales Assistant
+E002,Brian Mahlangu,S002,Store Manager
+E003,Amanda Naidoo,S001,Cashier
+E004,Amanda Williams,S003,Sales Assistant
+E005,Kagiso Khumalo,S004,Store Supervisor
+E006,Thabo Mabena,S005,Cashier
+E007,Brian Mokoena,S004,Cashier
+E008,Naledi Nkosi,S005,Sales Assistant
+E009,Nomsa Molefe,S005,Cashier
+E010,Lerato Ndlovu,S005,Sales Assistant
+E011,Sipho Ndlovu,S003,Sales Assistant
+E012,Amanda Naidoo,S002,Store Manager
+E013,Ayanda Khumalo,S003,Store Manager
+E014,Sipho Molefe,S005,Sales Assistant
+E015,Kagiso Smith,S001,Store Supervisor
+E016,Kagiso Williams,S005,Store Supervisor
+E017,Sibusiso Naidoo,S003,Cashier
+E018,Sipho Pillay,S005,Store Manager
+E019,Thabo Naidoo,S005,Cashier
+E020,Nomsa Smith,S004,Sales Assistant
+E021,Naledi Mthembu,S005,Sales Assistant
+E022,Naledi Mahlangu,S005,Store Supervisor
+E023,Karabo Williams,S004,Store Manager
+E024,David Mthembu,S002,Store Manager
+E025,Kagiso Williams,S004,Sales Assistant
+E026,Amanda Naidoo,S004,Sales Assistant
+E027,Ayanda Mabena,S004,Cashier
+E028,David Mthembu,S002,Store Manager
+E029,Nomsa Molefe,S003,Sales Assistant
+E030,Sipho Naidoo,S003,Sales Assistant
+E031,Ayanda Jacobs,S004,Store Supervisor
+E032,Nomsa Mahlangu,S001,Cashier
+E033,Mpho Mthembu,S004,Cashier
+E034,Naledi Dlamini,S005,Cashier
+E035,Zanele Nkosi,S004,Cashier
+E036,Sibusiso Naidoo,S002,Cashier
+E037,Sipho Van Wyk,S002,Cashier
+E038,Mpho Dlamini,S005,Sales Assistant
+E039,Kagiso Smith,S001,Store Manager
+E040,Thabo Mabena,S005,Sales Assistant
+E041,Mpho Williams,S004,Store Supervisor
+E042,Kagiso Mahlangu,S004,Store Supervisor
+E043,Lerato Mabena,S004,Store Supervisor
+E044,Sipho Mabena,S004,Cashier
+E045,Nomsa Mabena,S001,Store Manager
+E046,Nomsa Mokoena,S004,Store Supervisor
+E047,Sibusiso Ndlovu,S004,Cashier
+E048,Amanda Jacobs,S004,Store Manager
+E049,Zanele Mokoena,S003,Sales Assistant
+E050,Karabo Williams,S002,Sales Assistant
+E051,Mpho Williams,S003,Store Supervisor
+E052,Nomsa Naidoo,S002,Cashier
+E053,Brian Williams,S003,Store Supervisor
+E054,Lerato Pillay,S003,Store Manager
+E055,Karabo Jacobs,S002,Store Supervisor
+E056,Sibusiso Khumalo,S003,Store Supervisor
+E057,Lerato Williams,S004,Cashier
+E058,Ayanda Nkosi,S005,Sales Assistant
+E059,David Nkosi,S003,Store Manager
+E060,Sipho Dlamini,S004,Cashier
