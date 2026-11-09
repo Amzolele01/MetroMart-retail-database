@@ -181,3 +181,76 @@ The phases are designed to build upon one another. Findings from data discovery 
 
 Analytical reporting is performed using the implemented database and its validated information.
 
+## 9. Technology Stack
+
+The MetroMart Retail Database Project uses a combination of data investigation, database management, development and documentation tools.
+
+The selected tools support the different stages of the project, from initial source-data investigation to database implementation, analysis and version-controlled documentation.
+
+### 9.1 Tools and Technologies
+
+| Tool / Technology | Purpose |
+|---|---|
+| **Google Sheets** | Used for data profiling, investigation, validation checks and working with spreadsheet-based datasets. |
+| **Google Docs** | Used for preliminary documentation, investigation notes and drafting project reports. |
+| **PostgreSQL** | Used as the relational database management system for designing and implementing the retail database. |
+| **pgAdmin** | Used to manage and interact with the PostgreSQL database. |
+| **SQL** | Used for data validation, database operations, querying and business analysis. |
+| **Visual Studio Code** | Used for working with project files, SQL scripts and technical documentation. |
+| **GitHub** | Used for version control, project organisation and maintaining the project's documentation and source files. |
+
+### 9.2 Technology Roles
+
+The tools are used according to their respective roles within the project:
+
+- Data investigation and preliminary validation are conducted using Google Sheets.
+- Preliminary documentation and drafting are maintained in Google Docs.
+- Database development and management are performed using PostgreSQL and pgAdmin.
+- SQL provides the language for database operations and analytical queries.
+- Visual Studio Code supports the development and organisation of project files.
+- GitHub provides version control and a central location for maintaining project documentation and deliverables.
+
+### 9.3 Technology Selection
+
+The selected technologies provide the capabilities required to investigate structured datasets, develop a relational database, perform SQL-based analysis and maintain organised technical documentation.
+
+The technology stack may be extended if additional tools become necessary during project development.
+
+## 10. Data Sources Overview
+
+The MetroMart Retail Database Project is based on seven operational datasets and two supporting reference files supplied in the original client package.
+
+These files contain the business information required for data investigation, cleaning, relational database development and subsequent analysis.
+
+### 10.1 Operational Datasets
+
+| Source File | Description |
+|---|---|
+| `customer_export_legacy.csv` | Contains legacy customer records from an earlier customer-data export. |
+| `customers.csv` | Contains customer information from the supplied customer dataset. |
+| `employees.csv` | Contains employee information, including employee identifiers, names, store assignments and roles. |
+| `products.xlsx` | Contains product catalogue information, including product details, categories and pricing. |
+| `returns.csv` | Contains records of returned sales, including transaction and product references. |
+| `sales_2023_2025.csv` | Contains sales transaction records covering 2023–2025. |
+| `stores.csv` | Contains store information, including store identifiers and locations. |
+
+### 10.2 Supporting Reference Files
+
+| Reference File | Description |
+|---|---|
+| `product_categories.xlsx` | Provides product category reference information. |
+| `store_codes.csv` | Provides store code reference information, including mappings used to investigate historical store identifiers. |
+
+### 10.3 Source Data Handling
+
+The operational datasets and reference files are preserved in their original form within the client source archive.
+
+Separate working copies are used for data profiling, quality investigation, cleaning and transformation.
+
+The reference files are used to support interpretation and validation where appropriate. Their contents are not automatically assumed to be authoritative without investigation.
+
+### 10.4 Source Inventory
+
+The detailed source inventory, including dataset structures, record counts and field-level information, is maintained in the project's data discovery and investigation documentation.
+
+The original files can be accessed through the [Client Source Package](./00_Client_Source/).
