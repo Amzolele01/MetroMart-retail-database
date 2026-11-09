@@ -1,16 +1,18 @@
-# Customers Dataset — Data Quality Investigation
+# Data Quality Investigation Report: Customers Dataset
 
-## 1. Overview
+## 1. Dataset Overview
 
-This document records the data quality investigation conducted on the `customers.csv` dataset as part of Phase 3 of the MetroMart Retail Database Project.
+**Source file:** `customers.csv`  
+**Investigation phase:** Phase 3 — Data Quality Investigation  
+**Investigation tool:** Google Sheets  
+**Total records:** 1,220  
+**Total attributes:** 6
 
-The purpose of the investigation was to assess the completeness, consistency, uniqueness and structural reliability of customer records before proceeding to data cleaning, validation and database implementation.
+The Customers dataset was investigated to assess its completeness, uniqueness, consistency, structural reliability and potential data-quality issues before proceeding to data cleaning, validation and database implementation.
 
-The investigation was performed using Google Sheets. The original source dataset was preserved, and all checks were conducted using a separate working copy.
+The investigation was conducted using a separate Google Sheets working copy. The original source dataset was preserved without modifications.
 
-## 2. Dataset Structure
-
-The dataset contains 1,220 customer records and six attributes.
+### Dataset Structure
 
 | Column | Attribute |
 |---|---|
@@ -21,12 +23,9 @@ The dataset contains 1,220 customer records and six attributes.
 | E | city |
 | F | province |
 
-**Total records:** 1,220  
-**Total attributes:** 6
+## 2. Data Completeness and Missing Values
 
-## 3. Data Completeness and Missing Values
-
-All six attributes were checked for missing values.
+All six attributes were examined for missing values.
 
 | Attribute | Missing values |
 |---|---:|
@@ -36,172 +35,275 @@ All six attributes were checked for missing values.
 | email | 0 |
 | city | 0 |
 | province | 0 |
+| **Total** | **25** |
 
-**Finding:**
+A total of 25 customer records contain missing phone numbers. No missing values were identified in the remaining five attributes.
 
-A total of 25 customer records have missing phone numbers. No missing values were identified in the remaining five attributes.
+This represents approximately 2.05% of the dataset.
 
-No attempt was made to populate missing phone numbers because no supporting source information was available.
+### 2.1 Missing Phone Numbers by City
 
-## 4. Customer ID Investigation
+The missing phone records were grouped by city to examine their distribution.
 
-The customer ID column was checked for uniqueness, duplicate values and identifier structure.
+| City | Missing phone values |
+|---|---:|
+| Fourways | 2 |
+| JHB | 4 |
+| Midrand | 3 |
+| RANDburg | 5 |
+| Roodepoort | 4 |
+| Sandton | 3 |
+| Soweto | 4 |
+| **Total** | **25** |
+
+### 2.2 Investigation into Recovering Missing Phone Numbers
+
+The 25 affected records were investigated to determine whether existing customer records could provide reliable evidence for recovering the missing phone numbers.
+
+The investigation included:
+
+- Checking for exact duplicate email addresses.
+- Identifying repeated full customer names.
+- Retrieving other records with matching names and populated phone numbers.
+- Comparing available customer details, including email addresses and cities.
 
 **Findings:**
-- Total customer IDs: 1,220.
+
+- None of the 25 records shared an exact email address with another customer record.
+- All 25 customer names appeared elsewhere in the dataset.
+- Matching names generally had different email addresses and, in several cases, different cities.
+- No confirmed identity matches provided sufficient evidence to recover the missing phone numbers.
+
+**Investigation decision:** All 25 missing phone values were retained as unresolved missing values. No phone numbers were populated without reliable supporting evidence.
+
+## 3. Customer ID Investigation
+
+The `customer_id` attribute was examined for completeness, uniqueness, duplicate identifiers and structural consistency.
+
+### 3.1 Uniqueness and Completeness
+
+**Findings:**
+
+- Total customer records: 1,220.
 - Unique customer IDs: 1,220.
 - Duplicate customer IDs: 0.
-- Two identifier structures were observed: `C####` and `C#X###`.
+- Missing customer IDs: 0.
+- No embedded header values were identified in the data.
 
-Both structures were retained during the investigation. Their standardization, if required, will be considered during Phase 4.
+### 3.2 Customer ID Formats
 
-## 5. Customer Name Investigation
+Two distinct customer ID formats were identified.
 
-Customer names were examined for distinct values, repetition, whitespace and capitalization inconsistencies.
+| ID format | Number of records |
+|---|---:|
+| Standard format (`C` followed by four digits) | 1,200 |
+| Legacy-style format (`C9X` followed by three digits) | 20 |
+| **Total** | **1,220** |
 
-**Findings:**
-- Total customer records: 1,220.
-- Distinct customer names: 225.
-- Names appearing more than once: 219.
-- Names appearing only once: 6.
-- Records belonging to repeated-name groups: 1,214.
-- Repeated occurrences beyond the first occurrence: 995.
-- Leading or trailing whitespace: 0.
-- Capitalization inconsistencies identified: 0.
+The 20 legacy-style identifiers follow a consistent pattern, ranging from `C9X000` to `C9X019`.
 
-**Interpretation:**
+Both formats were unique within the dataset.
 
-Repeated customer names do not automatically indicate duplicate customer records. Different customers may share the same full name. Therefore, repeated names were recorded as an observation rather than classified as duplicate records.
+### 3.3 ID Format Observation
 
-## 6. Phone Number Investigation
+The presence of two identifier formats may indicate that customer records originated from different systems or data-entry processes.
 
-Phone numbers were examined for missing values, whitespace and digit-length consistency.
+This remains a hypothesis and cannot be confirmed from the Customers dataset alone.
 
-### 6.1 Missing phone numbers
+The identifiers were preserved during the investigation. Any decision about standardising or mapping these identifiers will be considered during Phase 4.
+
+## 4. Customer Name Investigation
+
+The `cust_name` attribute was examined for distinct values, repeated names, whitespace and capitalization inconsistencies.
+
+### 4.1 Name Distribution
+
+| Finding | Count |
+|---|---:|
+| Total customer records | 1,220 |
+| Distinct customer names | 225 |
+| Names appearing more than once | 219 |
+| Names appearing only once | 6 |
+| Records belonging to repeated-name groups | 1,214 |
+| Additional occurrences beyond the first | 995 |
+
+No leading or trailing whitespace or capitalization inconsistencies were identified by the checks performed.
+
+### 4.2 Repeated Name Investigation
+
+Repeated names were examined to determine whether they represented duplicate customer records.
+
+Examples included Brian Van Wyk, who appeared in five customer records, as well as Amanda Mahlangu, Amanda Molefe and Zanele Ndlovu.
+
+The investigation established that repeated names alone do not provide sufficient evidence to classify records as duplicates. Different customers may share the same full name, while other identifying attributes may differ.
+
+**Investigation decision:** Repeated customer names were recorded as an observation rather than classified as confirmed duplicate records. No records were removed or merged based solely on matching names.
+
+## 5. Phone Number Investigation
+
+The `phone` attribute was examined for completeness, whitespace formatting and digit-length consistency.
+
+### 5.1 Missing Phone Numbers
 
 A total of 25 records have missing phone numbers.
 
-### 6.2 Whitespace formatting
+The remaining 1,195 records contain populated phone values.
+
+The missing values were retained because no reliable supporting information was available to recover them.
+
+### 5.2 Phone Number Whitespace
 
 Twenty phone numbers contain internal spaces.
 
-These spaces appear to be formatting separators within the numbers, for example:
+These spaces appear to be formatting separators within the numbers.
+
+Example:
 
 `074 418 8276`
 
 No leading or trailing whitespace was identified in the phone number column.
 
-### 6.3 Phone number lengths
+### 5.3 Phone Number Digit Lengths
 
-After removing formatting characters and examining the digit lengths, two distinct lengths were identified:
+After removing formatting characters and examining the digit lengths, two distinct patterns were identified.
 
-| Digit length | Observation |
+| Customer ID group | Phone number length |
+|---|---:|
+| Standard-format IDs (`C####`) | 9 digits |
+| Legacy-style IDs (`C9X###`) | 10 digits |
+
+The observed digit-length patterns correspond to the two customer ID groups.
+
+This relationship was recorded as an observation. The investigation did not establish that either pattern was incorrect.
+
+**Investigation decisions:**
+
+- Preserve all original phone values.
+- Do not automatically add or remove digits.
+- Retain the 20 phone numbers containing internal spaces for consideration during Phase 4.
+- Investigate the different phone-number patterns before deciding whether standardisation is appropriate.
+
+## 6. Email Address Investigation
+
+The `email` attribute was examined for completeness, uniqueness, duplicated values, whitespace and basic formatting consistency.
+
+### 6.1 Completeness and Uniqueness
+
+| Finding | Count |
+|---|---:|
+| Total email records | 1,220 |
+| Missing email addresses | 0 |
+| Distinct email addresses | 1,200 |
+| Duplicated email addresses | 20 |
+| Repeated occurrences beyond the first | 20 |
+| Customer records involved in duplicated email groups | 40 |
+
+### 6.2 Duplicated Email Addresses
+
+An exact-match frequency check identified 20 duplicated email addresses. Each address appeared in two customer records, creating 20 potential duplicate pairs involving 40 records.
+
+The affected records were compared using other customer attributes.
+
+The investigation found that each pair shared:
+
+- The same email address.
+- The same full customer name.
+- The same city and province.
+- Matching phone numbers after accounting for formatting spaces and an optional leading zero.
+
+The main difference was the customer ID format: one record used a standard-format ID, while the other used a legacy-style ID.
+
+### 6.2.1 Records with Duplicated Email Addresses
+
+The following records were identified through the exact email-match investigation.
+
+| Customer ID | Email address |
 |---|---|
-| 9 digits | Associated with customer IDs following the `C###` structure |
-| 10 digits | Found in the other customer records |
-
-**Interpretation:**
-
-The phone number column contains two different length patterns. The 9-digit numbers associated with the `C###` customer ID group may require further investigation before standardization.
-
-No phone numbers were changed or automatically corrected.
-
-## 7. Email Address Investigation
-
-Email addresses were examined for missing values, uniqueness, duplication, whitespace and basic formatting consistency.
-
-### 7.1 Completeness and uniqueness
-
-- Missing email addresses: 0.
-- Distinct email addresses: 1,200.
-- Repeated email occurrences beyond the first: 20.
-- Distinct duplicated email addresses: 20.
-- Customer records involved in duplicated email groups: 40.
-
-### 7.2 Duplicated email addresses
-
-Twenty email addresses were each associated with two customer records.
-
-The following table records the affected customer IDs and email addresses.
-
-| Customer ID | Duplicated email address |
-|---|---|
-| C9X019 | nomsa.smith110@example.com |
-| C9X018 | sibusiso.mthembu695@example.com |
-| C9X017 | nomsa.khumalo400@example.com |
-| C9X016 | brian.ndlovu1129@example.com |
-| C9X015 | zanele.mabena722@example.com |
-| C9X014 | mpho.jacobs595@example.com |
-| C9X013 | naledi.molefe281@example.com |
-| C9X012 | david.dlamini35@example.com |
-| C9X011 | sipho.dlamini129@example.com |
-| C9X010 | naledi.williams1133@example.com |
-| C9X009 | sipho.smith47@example.com |
-| C9X008 | brian.mokoena751@example.com |
-| C9X007 | sibusiso.dlamini831@example.com |
-| C9X006 | david.van wyk152@example.com |
-| C9X005 | kagiso.naidoo1012@example.com |
-| C9X004 | karabo.mabena669@example.com |
-| C9X003 | karabo.pillay142@example.com |
-| C9X002 | zanele.jacobs1023@example.com |
-| C9X001 | nomsa.nkosi458@example.com |
-| C9X000 | nomsa.williams460@example.com |
-
-The corresponding second customer IDs were:
-
-| Customer ID | Duplicated email address |
-|---|---|
-| C1133 | naledi.williams1133@example.com |
-| C1129 | brian.ndlovu1129@example.com |
-| C1023 | zanele.jacobs1023@example.com |
-| C1012 | kagiso.naidoo1012@example.com |
-| C0831 | sibusiso.dlamini831@example.com |
-| C0751 | brian.mokoena751@example.com |
-| C0722 | zanele.mabena722@example.com |
-| C0695 | sibusiso.mthembu695@example.com |
-| C0669 | karabo.mabena669@example.com |
-| C0595 | mpho.jacobs595@example.com |
-| C0460 | nomsa.williams460@example.com |
-| C0458 | nomsa.nkosi458@example.com |
-| C0400 | nomsa.khumalo400@example.com |
-| C0281 | naledi.molefe281@example.com |
-| C0152 | david.van wyk152@example.com |
-| C0142 | karabo.pillay142@example.com |
-| C0129 | sipho.dlamini129@example.com |
-| C0110 | nomsa.smith110@example.com |
-| C0047 | sipho.smith47@example.com |
 | C0035 | david.dlamini35@example.com |
+| C9X012 | david.dlamini35@example.com |
+| C0047 | sipho.smith47@example.com |
+| C9X009 | sipho.smith47@example.com |
+| C0110 | nomsa.smith110@example.com |
+| C9X019 | nomsa.smith110@example.com |
+| C0129 | sipho.dlamini129@example.com |
+| C9X011 | sipho.dlamini129@example.com |
+| C0142 | karabo.pillay142@example.com |
+| C9X003 | karabo.pillay142@example.com |
+| C0152 | david.van wyk152@example.com |
+| C9X006 | david.van wyk152@example.com |
+| C0281 | naledi.molefe281@example.com |
+| C9X013 | naledi.molefe281@example.com |
+| C0400 | nomsa.khumalo400@example.com |
+| C9X017 | nomsa.khumalo400@example.com |
+| C0458 | nomsa.nkosi458@example.com |
+| C9X001 | nomsa.nkosi458@example.com |
+| C0460 | nomsa.williams460@example.com |
+| C9X000 | nomsa.williams460@example.com |
+| C0595 | mpho.jacobs595@example.com |
+| C9X014 | mpho.jacobs595@example.com |
+| C0669 | karabo.mabena669@example.com |
+| C9X004 | karabo.mabena669@example.com |
+| C0695 | sibusiso.mthembu695@example.com |
+| C9X018 | sibusiso.mthembu695@example.com |
+| C0722 | zanele.mabena722@example.com |
+| C9X015 | zanele.mabena722@example.com |
+| C0751 | brian.mokoena751@example.com |
+| C9X008 | brian.mokoena751@example.com |
+| C0831 | sibusiso.dlamini831@example.com |
+| C9X007 | sibusiso.dlamini831@example.com |
+| C1012 | kagiso.naidoo1012@example.com |
+| C9X005 | kagiso.naidoo1012@example.com |
+| C1023 | zanele.jacobs1023@example.com |
+| C9X002 | zanele.jacobs1023@example.com |
+| C1129 | brian.ndlovu1129@example.com |
+| C9X016 | brian.ndlovu1129@example.com |
+| C1133 | naledi.williams1133@example.com |
+| C9X010 | naledi.williams1133@example.com |
 
-The paired records were compared using other customer attributes. The investigation found matching customer details, including names and contact information after phone-number formatting was accounted for.
+**Observation:** Every duplicated email address is shared between one standard-format customer ID and one legacy-style customer ID.
 
-These findings suggest that the duplicated email addresses may represent corresponding customer records across the two identifier groups. They should not automatically be treated as errors or deleted.
+### 6.2.2 Potential Duplicate Customer Records
 
-### 7.3 Email whitespace and formatting
+The matching attributes provide strong evidence that the 20 pairs may represent corresponding customer records across the two identifier groups.
 
-The investigation identified 80 email addresses containing whitespace.
+However, the records have not been independently verified against an authoritative customer source.
+
+**Investigation decision:** The 20 pairs are classified as potential duplicate customer records, not confirmed duplicates. All original records will be retained pending further validation.
+
+None of the 40 records involved in duplicated email groups had a missing phone number.
+
+### 6.3 Email Whitespace and Formatting
+
+The investigation identified 80 email records containing internal whitespace.
 
 All 80 affected addresses contain an internal space in the surname `van wyk`.
 
-Example:
+Examples include:
 
-`david.van wyk152@example.com`
+- `naledi.van wyk12@example.com`
+- `kagiso.van wyk39@example.com`
+- `david.van wyk152@example.com`
 
-Additional checks found:
-- Leading or trailing whitespace: 0.
-- Repeated internal whitespace: 0.
-- Basic email-format validation failures: 80.
+Additional checks established:
+
+| Check | Finding |
+|---|---:|
+| Email records containing whitespace | 80 |
+| Leading or trailing whitespace | 0 |
+| Repeated internal whitespace | 0 |
+| Basic email-format validation failures | 80 |
 
 The 80 basic format-validation failures correspond to the 80 email addresses containing internal whitespace.
 
-**Interpretation:**
+These findings indicate a consistent formatting issue. However, the investigation does not establish whether the affected email addresses correspond to active or deliverable mailboxes.
 
-The email addresses exhibit a consistent formatting issue involving the surname `van wyk`. These records require standardization during Phase 4. The original values were retained during the investigation.
+**Investigation decision:** Original email values were preserved. Email-format standardisation will be considered during Phase 4.
 
-## 8. City and Province Investigation
+## 7. City and Province Investigation
 
-The city and province attributes were examined for distinct values, record distribution, whitespace and capitalization consistency.
+The `city` and `province` attributes were examined for completeness, distinct values, record distribution, whitespace and capitalization consistency.
 
-### 8.1 City distribution
+### 7.1 City Distribution
 
 Seven distinct city values were identified.
 
@@ -216,7 +318,7 @@ Seven distinct city values were identified.
 | Soweto | 177 |
 | **Total** | **1,220** |
 
-### 8.2 Province distribution
+### 7.2 Province Distribution
 
 | Province | Records |
 |---|---:|
@@ -224,323 +326,307 @@ Seven distinct city values were identified.
 
 All customer records are associated with Gauteng.
 
-### 8.3 Location formatting
+### 7.3 Location Formatting and Naming Differences
 
-No leading or trailing whitespace was identified in the city or province attributes. No capitalization inconsistencies were identified by the checks performed.
+No leading or trailing whitespace or capitalization inconsistencies were identified by the checks performed on the Customers dataset.
 
-However, the following city-label differences were observed:
+However, city-label differences were observed:
+
 - `JHB` and `Johannesburg`
 - `RANDburg` and `Randburg`
 
 The `Johannesburg` and `Randburg` forms were observed in the separate `customer_export_legacy.csv` dataset.
 
-These differences should be considered during Phase 4 when standardizing location values across customer datasets.
+These differences should be considered when standardising location values across the customer datasets.
 
-## 9. Summary of Data Quality Findings
+**Investigation decision:** The original city and province values were retained. Cross-dataset location standardisation will be considered during Phase 4.
 
-| Area | Finding |
+## 8. Consolidated Data Quality Findings
+
+| Investigation area | Finding |
 |---|---|
 | Dataset completeness | 25 missing phone numbers |
 | Customer IDs | 1,220 unique IDs; no duplicates |
-| ID structures | Two observed formats |
-| Customer names | 219 names appear more than once |
-| Phone numbers | 9- and 10-digit patterns |
-| Phone formatting | 20 numbers contain internal spaces |
-| Email duplication | 20 duplicated addresses involving 40 records |
+| ID formats | 1,200 standard IDs and 20 legacy-style IDs |
+| Customer names | 225 distinct names |
+| Repeated-name groups | 219 names appearing more than once |
+| Additional name occurrences | 995 |
+| Phone number completeness | 1,195 populated values |
+| Phone number formatting | 20 numbers contain internal spaces |
+| Phone number lengths | 9-digit and 10-digit patterns associated with different ID groups |
+| Duplicate emails | 20 duplicated addresses involving 40 records |
+| Potential duplicate records | 20 potential pairs |
 | Email formatting | 80 addresses contain internal whitespace |
 | City values | 7 distinct city labels |
 | Province values | All 1,220 records contain Gauteng |
-| Location naming | `JHB`/`Johannesburg` and `RANDburg`/`Randburg` differences |
+| Location naming | JHB/Johannesburg and RANDburg/Randburg differences |
 
-## 10. Recommendations for Phase 4
+## 9. Investigation Decisions
 
-The following items should be considered during data cleaning and validation:
+The following decisions were established during Phase 3:
 
-1. Investigate the 25 missing phone numbers. Do not populate them without reliable supporting information.
-2. Review the 9-digit phone number pattern associated with the `C###` customer ID group before deciding whether standardization is appropriate.
-3. Standardize phone number formatting where justified, including the 20 numbers containing internal spaces.
-4. Review the 80 email addresses containing internal spaces and establish a consistent email-formatting rule.
-5. Investigate the duplicated email groups and preserve their relationship until the appropriate customer-record treatment is established.
-6. Standardize city labels across customer datasets, particularly `JHB`/`Johannesburg` and `RANDburg`/`Randburg`.
-7. Retain repeated customer names unless additional evidence establishes that records represent duplicate customers.
+1. Preserve all 25 missing phone values because no reliable supporting information was available.
+2. Retain both customer ID formats pending further consideration.
+3. Do not classify repeated customer names as confirmed duplicate records.
+4. Flag the 20 duplicated email pairs as potential duplicate customer records.
+5. Preserve the original email values and flag the 80 affected records for formatting standardisation.
+6. Retain the phone-number formatting and digit-length observations without automatically changing the values.
+7. Preserve original city and province values.
+8. Retain all original customer records. No records were deleted, merged or modified.
+9. Maintain the original source dataset separately from the investigation and future cleaning copies.
 
-## 11. Investigation Methodology and Formulas
+## 10. Phase 4 Considerations
 
-The investigation was conducted in Google Sheets using formulas and filtered outputs. The following formulas were used or applied during the investigation.
+The following issues will require attention during the data cleaning and validation stage:
 
-**Missing values — customer IDs**
+- Handling the 25 unresolved missing phone numbers.
+- Reviewing the two customer ID formats and deciding whether standardisation or identifier mapping is appropriate.
+- Reviewing the 9-digit and 10-digit phone-number patterns before deciding on standardisation.
+- Standardising phone-number formatting where justified.
+- Reviewing the 20 potential duplicate customer pairs before deciding whether any records should be merged or otherwise reconciled.
+- Standardising the 80 email addresses containing internal spaces, while preserving traceability to their original values.
+- Standardising city labels across customer datasets, particularly JHB/Johannesburg and RANDburg/Randburg.
+- Validating customer ID relationships with sales and returns records during cross-dataset validation.
 
-`=COUNTBLANK(A2:A1221)`
+These are considerations for the subsequent phase, not corrections performed during this investigation.
 
-The same `COUNTBLANK` approach was applied to the remaining attributes by changing the column reference.
+## 11. Investigation Methods and Google Sheets Formulas
 
-**Duplicate customer IDs**
+Google Sheets was used to perform data profiling, identify data-quality issues and validate investigation findings.
 
-`=IFERROR(UNIQUE(FILTER(A2:A1221,COUNTIF(A2:A1221,A2:A1221)>1)),"None")`
+The formulas below document the checks performed during the investigation. The source data was not modified by these formulas.
 
-**Distinct customer names**
+### 11.1 Missing Values
 
-`=COUNTUNIQUE(B2:B1221)`
+**Purpose:** Count missing values in each attribute.
 
-**Names appearing more than once**
+```excel
+=COUNTBLANK(A2:A1221)
+```
 
-`=COUNTUNIQUE(FILTER(B2:B1221,COUNTIF(B2:B1221,B2:B1221)>1))`
+The formula was adjusted for each column by changing the column reference.
 
-**Repeated occurrences beyond the first**
+**Extract records with missing phone numbers:**
 
-`=COUNTA(B2:B1221)-COUNTUNIQUE(B2:B1221)`
+```excel
+=FILTER(A2:F1221,C2:C1221="")
+```
 
-**Records belonging to repeated-name groups**
+**Count missing phone numbers by city:**
 
-`=COUNTIF(ARRAYFORMULA(COUNTIF(B2:B1221,B2:B1221)),">1")`
+```excel
+=QUERY(FILTER(E2:E1221,C2:C1221=""),"SELECT Col1, COUNT(Col1) GROUP BY Col1 LABEL Col1 'City', COUNT(Col1) 'Missing Phones'",0)
+```
 
-**Phone numbers containing whitespace**
+### 11.2 Customer ID Validation
 
-`=FILTER({A2:A1221,B2:B1221,C2:C1221},REGEXMATCH(C2:C1221,"\s"))`
+**Check for embedded header values:**
 
-**Distinct phone-number lengths after removing formatting**
+```excel
+=COUNTIF(A2:A1221,"customer_id")
+```
 
-`=SORT(UNIQUE(ARRAYFORMULA(LEN(REGEXREPLACE(FILTER(C2:C1221,C2:C1221<>""),"[^0-9]","")))))`
+**Count standard-format IDs:**
 
-**Distinct email addresses**
+```excel
+=COUNTIF(A2:A1221,"C????")
+```
 
-`=COUNTUNIQUE(D2:D1221)`
+**Count legacy-style IDs:**
 
-**Duplicated email addresses**
+```excel
+=COUNTIF(A2:A1221,"C9X???")
+```
 
-`=UNIQUE(FILTER(D2:D1221,COUNTIF(D2:D1221,D2:D1221)>1))`
+**Check for duplicate IDs:**
 
-**Email addresses containing whitespace**
+```excel
+=COUNTA(A2:A1221)-COUNTUNIQUE(A2:A1221)
+```
 
-`=FILTER({A2:A1221,D2:D1221},REGEXMATCH(D2:D1221,"\s"))`
+**Extract duplicate customer IDs:**
 
-**Email leading/trailing or repeated internal whitespace**
+```excel
+=IFERROR(UNIQUE(FILTER(A2:A1221,COUNTIF(A2:A1221,A2:A1221)>1)),"None")
+```
 
-`=SUM(ARRAYFORMULA(N(LEN(D2:D1221)<>LEN(TRIM(D2:D1221)))))`
+### 11.3 Customer Name Investigation
 
-**Email addresses failing basic format validation**
+**Count distinct customer names:**
 
-`=SUM(ARRAYFORMULA(N(NOT(REGEXMATCH(D2:D1221,"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")))))`
+```excel
+=COUNTUNIQUE(B2:B1221)
+```
 
-**Distinct city values**
+**Count names appearing more than once:**
 
-`=SORT(UNIQUE(E2:E1221))`
+```excel
+=COUNTUNIQUE(FILTER(B2:B1221,COUNTIF(B2:B1221,B2:B1221)>1))
+```
 
-**City distribution**
+**Calculate additional occurrences beyond the first:**
 
-`=QUERY(E2:E1221,"SELECT E, COUNT(E) WHERE E IS NOT NULL GROUP BY E LABEL COUNT(E) 'Records'",0)`
+```excel
+=COUNTA(B2:B1221)-COUNTUNIQUE(B2:B1221)
+```
 
-**Distinct province values**
+**Calculate records belonging to repeated-name groups:**
 
-`=SORT(UNIQUE(F2:F1221))`
+```excel
+=COUNTIF(ARRAYFORMULA(COUNTIF(B2:B1221,B2:B1221)),">1")
+```
 
-**Province distribution**
+**Extract repeated names:**
 
-`=QUERY(F2:F1221,"SELECT F, COUNT(F) WHERE F IS NOT NULL GROUP BY F LABEL COUNT(F) 'Records'",0)`
+```excel
+=SORT(UNIQUE(FILTER(B2:B1221,COUNTIF(B2:B1221,B2:B1221)>1)))
+```
 
-Additional whitespace and capitalization checks were also performed on customer names, phone numbers, email addresses, cities and provinces.
+**Calculate the frequency of a selected unique name (where J2 contains the name):**
 
-## 12. Conclusion
+```excel
+=COUNTIF($B$2:$B$1221,J2)
+```
 
-The investigation established that the `customers.csv` dataset contains 1,220 records with six attributes. Although most attributes are complete and customer IDs are unique, several data quality observations were identified, particularly missing phone numbers, inconsistent phone number lengths, email formatting issues, duplicated email addresses and location naming differences.
+### 11.4 Phone Number Investigation
 
-The findings have been recorded for consideration during Phase 4. No corrections were made to the original source dataset during this investigation.
+**Extract phone numbers containing whitespace:**
 
-**Investigation status: Completed.**# Customers Dataset — Data Quality Investigation Report
+```excel
+=FILTER({A2:A1221,B2:B1221,C2:C1221},REGEXMATCH(C2:C1221,"\s"))
+```
 
-## 1. Dataset Overview
+**Count populated phone numbers:**
 
-**Dataset:** `customers.csv`  
-**Investigation phase:** Phase 3 — Data Quality Investigation  
-**Total records:** 1,220  
-**Total attributes:** 6
+```excel
+=COUNTA(C2:C1221)
+```
 
-The Customers dataset contains customer information used by the MetroMart retail system.
-
-The investigation was conducted using a working copy in Google Sheets. The original source dataset was not modified.
-
-### Attributes investigated
-
-| Column | Attribute |
-|---|---|
-| A | customer_id |
-| B | cust_name |
-| C | phone |
-| D | email |
-| E | city |
-| F | province |
-
-## 2. Completeness Investigation
-
-The first investigation examined missing values across all six attributes.
-
-### Results
-
-- `customer_id`: 0 missing values
-- `cust_name`: 0 missing values
-- `phone`: 25 missing values
-- `email`: 0 missing values
-- `city`: 0 missing values
-- `province`: 0 missing values
-
-A total of 25 records have missing phone numbers.
-
-This represents approximately 2.05% of the dataset.
-
-### Formula used
-
-The `COUNTBLANK` function was used to identify missing values in each attribute.
-
-Example for the phone column:
+**Count missing phone numbers:**
 
 ```excel
 =COUNTBLANK(C2:C1221)
 ```
 
-### Investigation of missing phone numbers
-
-The affected records were extracted for inspection.
-
-The investigation established that:
-- 25 customer records have no phone number.
-- The other five attributes have no missing values.
-- The missing phone numbers were not filled in because no supporting source information was available.
-
-**Finding:** Missing phone numbers were identified in 25 records. These values were retained as missing rather than replaced with invented information.
-
-## 3. Customer ID Investigation
-
-The `customer_id` attribute was examined for uniqueness and consistency.
-
-### Results
-
-- Total customer records: 1,220
-- Unique customer IDs: 1,220
-- Duplicate customer IDs: 0
-- Missing customer IDs: 0
-
-The investigation also identified two groups of customer identifiers:
-
-- 1,200 standard customer IDs.
-- 20 legacy customer IDs.
-
-Although the identifiers came from different ID groups, they were unique within the dataset.
-
-### Formula used
+**Examine distinct phone-number digit lengths after removing formatting characters:**
 
 ```excel
-=COUNTUNIQUE(A2:A1221)
+=SORT(UNIQUE(ARRAYFORMULA(LEN(REGEXREPLACE(FILTER(C2:C1221,C2:C1221<>""),"[^0-9]","")))))
 ```
 
-**Finding:** All 1,220 customer records have unique customer IDs. No duplicate customer identifiers were identified.
+**Group populated phone numbers by digit length:**
 
-The presence of legacy identifiers was recorded for consideration during later standardization and database design.
+```excel
+=QUERY(ARRAYFORMULA(IF(C2:C1221="","",LEN(REGEXREPLACE(C2:C1221,"[^0-9]","")))),"SELECT Col1, COUNT(Col1) WHERE Col1 IS NOT NULL GROUP BY Col1 LABEL Col1 'Digit Length', COUNT(Col1) 'Records'",0)
+```
 
-## 4. Customer Name Investigation
+The digit-length results were examined alongside customer ID formats to identify the observed relationship between the two groups.
 
-The `cust_name` attribute was examined for repeated names.
+### 11.5 Duplicate Email Investigation
 
-### Results
+**Count distinct email addresses:**
 
-- Total customer records: 1,220
-- Distinct customer names: 225
-- Records containing repeated names: 995
+```excel
+=COUNTUNIQUE(D2:D1221)
+```
 
-Repeated names were investigated to determine whether they represented duplicate customer records.
+**Generate a sorted list of unique email addresses:**
 
-The investigation established that repeated names alone were not sufficient evidence of duplicate customers because different customers can share the same name.
+```excel
+=SORT(UNIQUE(FILTER(D2:D1221,D2:D1221<>"")))
+```
 
-For example, Brian Van Wyk appeared in five records. Repeated names were therefore treated as observations requiring comparison with other customer attributes rather than automatic duplicate classifications.
+**Calculate the frequency of an email address (where L2 contains the email):**
 
-**Finding:** Repeated customer names were identified, but they were not automatically classified as duplicate customer records.
+```excel
+=COUNTIF($D$2:$D$1221,L2)
+```
 
-## 5. Phone Number Investigation
+**Extract duplicated email addresses:**
 
-The phone attribute was examined for missing values and its relationship with other customer information.
+```excel
+=UNIQUE(FILTER(D2:D1221,COUNTIF(D2:D1221,D2:D1221)>1))
+```
 
-### Results
+**Retrieve all customer records associated with duplicated email addresses:**
 
-- Missing phone numbers: 25
-- Customer records with available phone numbers: 1,195
+```excel
+=FILTER(A2:F1221,ISNUMBER(MATCH(D2:D1221,FILTER(L2:L1221,M2:M1221>1),0)))
+```
 
-The missing phone numbers were retained because there was no reliable supporting information available to fill them.
+### 11.6 Email Formatting Investigation
 
-The investigation also checked the records with duplicated email addresses against missing phone numbers.
+**Extract email addresses containing whitespace:**
 
-**Finding:** None of the records with duplicated email addresses had missing phone numbers.
+```excel
+=FILTER({A2:A1221,D2:D1221},REGEXMATCH(D2:D1221,"\s"))
+```
 
-No phone numbers were invented or added during the investigation.
+**Count email addresses containing whitespace:**
 
-## 6. Email Investigation
+```excel
+=COUNTIF(D2:D1221,"* *")
+```
 
-The `email` attribute was examined for repeated values and formatting inconsistencies.
+**Check for leading, trailing or repeated internal whitespace:**
 
-### 6.1 Duplicate Email Addresses
+```excel
+=SUM(ARRAYFORMULA(N(LEN(D2:D1221)<>LEN(TRIM(D2:D1221)))))
+```
 
-The investigation identified 20 duplicated email addresses involving 40 customer records.
+**Count email addresses failing basic format validation:**
 
-The affected customer IDs and their corresponding email addresses were recorded for reference.
+```excel
+=SUM(ARRAYFORMULA(N(NOT(REGEXMATCH(D2:D1221,"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")))))
+```
 
-Repeated email addresses were treated as potential data quality issues rather than automatic proof that the customer records were duplicates.
+### 11.7 City and Province Investigation
 
-The investigation also established that none of these 40 records had missing phone numbers.
+**Extract distinct city values:**
 
-**Finding:** Twenty email addresses were duplicated across 40 customer records. These records require careful consideration during cleaning because a shared email address does not necessarily establish that two customer records represent the same person.
+```excel
+=SORT(UNIQUE(E2:E1221))
+```
 
-### 6.2 Email Whitespace Investigation
+**Calculate city distribution:**
 
-The investigation identified 80 email records containing whitespace inconsistencies.
+```excel
+=QUERY(E2:E1221,"SELECT Col1, COUNT(Col1) WHERE Col1 IS NOT NULL GROUP BY Col1 LABEL Col1 'City', COUNT(Col1) 'Records'",0)
+```
 
-These were recorded as formatting issues for consideration during Phase 4.
+**Extract distinct province values:**
 
-**Finding:** Email formatting inconsistencies were identified. The original values were retained during Phase 3.
+```excel
+=SORT(UNIQUE(F2:F1221))
+```
 
-## 7. City and Province Investigation
+**Calculate province distribution:**
 
-The `city` and `province` attributes were examined for completeness and naming consistency.
+```excel
+=QUERY(F2:F1221,"SELECT Col1, COUNT(Col1) WHERE Col1 IS NOT NULL GROUP BY Col1 LABEL Col1 'Province', COUNT(Col1) 'Records'",0)
+```
 
-Both attributes had zero missing values.
+Additional whitespace and capitalization checks were also performed on customer names, phone numbers, email addresses, cities and provinces.
 
-The investigation identified city-label variations, including:
+## 12. Conclusion
 
-- `JHB`
-- `Johannesburg`
-- `RANDburg`
-- `Randburg`
+The Customers dataset contains 1,220 records and six attributes. The investigation established that all customer IDs are unique and that no missing values occur outside the phone attribute.
 
-These observations were retained for consideration during the cleaning and standardization stage.
+Several data-quality observations were identified, particularly missing phone numbers, different customer ID and phone-number patterns, repeated customer names, duplicated email addresses, email-formatting inconsistencies and location naming differences.
 
-The presence of different labels was not treated as proof that the underlying customer locations were different.
+The most significant findings include:
 
-**Finding:** City-label inconsistencies were identified for later standardization. No source values were changed during the investigation.
+- 25 unresolved missing phone numbers.
+- 1,220 unique customer IDs across two identifier formats.
+- 225 distinct customer names, including 219 repeated-name groups.
+- 20 duplicated email addresses involving 40 records, classified as 20 potential duplicate pairs.
+- 80 email addresses containing internal whitespace.
+- 20 phone numbers containing internal spaces.
+- Two observed phone-number digit-length patterns associated with the customer ID groups.
+- City-label differences requiring cross-dataset standardisation.
 
-## 8. Investigation Decisions
+The investigation did not establish sufficient evidence to populate missing phone numbers or automatically merge potential duplicate customer records.
 
-The following decisions were established:
+No corrections were made to the original source dataset. All identified issues, observations and investigation decisions have been retained for consideration during Phase 4 — Data Cleaning and Validation.
 
-1. Missing phone numbers were retained because no reliable supporting information was available.
-2. Repeated customer names were not automatically classified as duplicate customer records.
-3. Duplicate email addresses were documented for further investigation.
-4. Email whitespace inconsistencies were recorded for later cleaning.
-5. Legacy customer identifiers were retained because they were unique.
-6. City-label inconsistencies were deferred to the cleaning and standardization stage.
-7. The original source dataset was not modified.
-
-## 9. Conclusion
-
-The investigation of `customers.csv` identified several data quality observations involving missing phone numbers, repeated names, duplicate email addresses, email whitespace and city-label inconsistencies.
-
-The dataset contains 1,220 records and six attributes. All customer IDs are unique, and no missing values were identified outside the phone attribute.
-
-The main findings are:
-
-- 25 missing phone numbers.
-- 1,220 unique customer IDs, including 1,200 standard IDs and 20 legacy IDs.
-- 225 distinct customer names, with repeated names requiring careful interpretation.
-- 20 duplicated email addresses involving 40 records.
-- 80 email records containing whitespace inconsistencies.
-- City-label variations requiring standardization.
-
-No unsupported corrections were made during the investigation.
-
-**Final investigation status:** Completed. The identified observations and unresolved issues were recorded for consideration during Phase 4 — Data Cleaning and Validation.
+**Investigation status: Completed.**
