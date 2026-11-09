@@ -1,0 +1,11 @@
+METROMART — PREVIOUS SYSTEM NOTES
+
+1. The business changed its point-of-sale system during the period covered by the exports.
+2. Some older reports used store codes different from current store codes.
+3. Staff sometimes exported data directly from spreadsheets.
+4. Management suspects customer records may contain duplicates.
+5. Returns were historically handled by a separate process.
+6. Finance uses the sales total for management reporting, but the exact calculation logic should be verified.
+7. No approved database schema currently exists.
+
+
