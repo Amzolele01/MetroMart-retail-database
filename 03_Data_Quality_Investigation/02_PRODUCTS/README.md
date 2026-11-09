@@ -6,7 +6,7 @@
 **Records:** 20  
 **Columns:** 5
 
-The dataset contains the following columns:
+The dataset contains:
 
 | Column | Description |
 |---|---|
@@ -55,21 +55,9 @@ The product identifiers were checked for uniqueness, completeness, and formattin
 
 ```excel
 =COUNTUNIQUE(A2:A21)
-```
-
-```excel
 =COUNTIF(A2:A21,"P*")
-```
-
-```excel
 =COUNTUNIQUE(ARRAYFORMULA(LEN(A2:A21)))
-```
-
-```excel
 =SUMPRODUCT(--REGEXMATCH(A2:A21,"[a-z]"))
-```
-
-```excel
 =SUMPRODUCT(--(A2:A21<>TRIM(A2:A21)))
 ```
 
@@ -94,17 +82,8 @@ Product names were examined for uniqueness, inconsistent spacing, and basic capi
 
 ```excel
 =COUNTUNIQUE(B2:B21)
-```
-
-```excel
 =SUMPRODUCT(--(B2:B21<>TRIM(B2:B21)))
-```
-
-```excel
 =SUMPRODUCT(--REGEXMATCH(B2:B21,"[a-z]"))
-```
-
-```excel
 =SUMPRODUCT(--REGEXMATCH(B2:B21,"  "))
 ```
 
@@ -130,25 +109,10 @@ The `unit_price` column was checked for numeric validity, text values, zero pric
 
 ```excel
 =COUNT(E2:E21)
-```
-
-```excel
 =COUNTA(E2:E21)-COUNT(E2:E21)
-```
-
-```excel
 =MIN(E2:E21)
-```
-
-```excel
 =MAX(E2:E21)
-```
-
-```excel
 =SUMPRODUCT(--(MOD(E2:E21,1)<>0))
-```
-
-```excel
 =COUNTIF(E2:E21,0)
 ```
 
@@ -177,9 +141,7 @@ Repeated unit prices were also examined.
 =FILTER(A2:E21,COUNTIF(E2:E21,E2:E21)>1)
 ```
 
-Repeated prices were found among several products.
-
-**Finding:** Repeated prices were not treated as duplicate product records. Different products can legitimately have the same unit price, and no evidence indicated that these records represented duplicate products.
+**Finding:** Repeated prices were found among several products. These were not treated as duplicate product records because different products can legitimately have the same unit price. No evidence indicated that these records represented duplicate products.
 
 ## 6. Category Investigation
 
@@ -205,18 +167,40 @@ The category column was examined to identify distinct category labels, their fre
 | Stationery | 3 |
 | **Total** | **20** |
 
-### 6.1 Category Inconsistencies
+### 6.1 Category Reference Validation
 
-The investigation identified several category labels that may represent inconsistent classification.
+A category reference containing the following six category labels was available for comparison:
 
-- `Electronic`, `Electronics`, and `electronics` appear to represent related or potentially identical category labels. They differ in singular/plural form and capitalization.
-- Products P004 and P005 share the subcategory `Computer Accessories`, but their parent categories are recorded as `Electronic` and `Electronics`.
-- Products P006 and P007 share the subcategory `Kitchen Appliances`, but their parent categories are `electronics` and `Appliances`.
-- Products P016 and P017 share the subcategory `Cleaning`, but their parent categories are `Electronic` and `Household`.
+| Category | Description |
+|---|---|
+| Electronics | Technology and electronic goods |
+| Appliances | Household appliances |
+| Clothing | Apparel |
+| Stationery | Office and school supplies |
+| Household | Cleaning and household consumables |
+| Home | Home and living products |
 
-These differences were recorded as category consistency concerns. However, no approved category definitions or classification hierarchy were supplied to establish the intended values.
+The observed category values were compared against these reference labels.
 
-The investigation therefore did not automatically merge or replace category labels.
+**Findings:**
+
+- `Electronics`, `Appliances`, `Clothing`, `Stationery`, `Household`, and `Home` match the reference.
+- `Electronic` does not match the reference label `Electronics`.
+- `electronics` also does not match the reference because of its lowercase formatting.
+
+The variations `Electronic` and `electronics` are likely inconsistent versions or possible typing errors involving the intended `Electronics` label. This is a probable explanation rather than a confirmed correction.
+
+### 6.2 Category and Subcategory Inconsistencies
+
+The investigation identified several products sharing the same subcategory but having different parent categories:
+
+- P004 and P005 share `Computer Accessories`, but their categories are `Electronic` and `Electronics`.
+- P006 and P007 share `Kitchen Appliances`, but their categories are `electronics` and `Appliances`.
+- P016 and P017 share `Cleaning`, but their categories are `Electronic` and `Household`.
+
+These differences raise category consistency concerns. However, the correct parent category cannot be established solely from the shared subcategory without confirmed business classification rules.
+
+No automatic category replacements were made.
 
 ## 7. Subcategory Investigation
 
@@ -243,33 +227,27 @@ The subcategory column was checked for distinct values, distribution, formatting
 | Writing | 1 |
 | **Total** | **20** |
 
-**Formatting checks:**
+**Formatting formulas:**
 
 ```excel
 =SUMPRODUCT(--(C2:C21<>TRIM(C2:C21)))
-```
-
-```excel
 =SUMPRODUCT(--(D2:D21<>TRIM(D2:D21)))
 ```
 
-**Results:** No leading or trailing spaces were identified in either the category or subcategory values.
+**Finding:** No leading or trailing spaces were identified in either the category or subcategory values.
 
 ### 7.1 Category and Subcategory Relationship Check
 
-The investigation also examined whether products sharing a subcategory were consistently assigned to the same category.
+The investigation examined whether products sharing a subcategory were consistently assigned to the same category.
 
-The working summary used the following formulas:
+**Formulas used:**
 
 ```excel
 =COUNTIF($D$2:$D$21,G1)
-```
-
-```excel
 =IFERROR(COUNTUNIQUE(FILTER($C$2:$C$21,$D$2:$D$21=G1)),0)
 ```
 
-The results identified three subcategories associated with more than one category:
+Three subcategories were identified as appearing under more than one category:
 
 | Subcategory | Product count | Distinct category count |
 |---|---:|---:|
@@ -285,46 +263,41 @@ The following records were identified as particularly relevant to the category c
 
 | Product ID | Product | Recorded category | Subcategory | Observation |
 |---|---|---|---|---|
-| P004 | Logitech Wireless Mouse | Electronic | Computer Accessories | Category differs from P005 |
-| P005 | HP Wireless Keyboard | Electronics | Computer Accessories | Category differs from P004 |
-| P006 | Defy Microwave 20L | electronics | Kitchen Appliances | Category differs from P007 |
-| P007 | Russell Hobbs Kettle | Appliances | Kitchen Appliances | Category differs from P006 |
-| P016 | Laundry Detergent 2L | Electronic | Cleaning | Potential category misclassification |
-| P017 | Dishwashing Liquid 750ml | Household | Cleaning | Different parent category from P016 |
-| P020 | Non-stick Frying Pan | Electronic | Cookware | Potential category misclassification |
+| P004 | Logitech Wireless Mouse | Electronic | Computer Accessories | Category does not match reference; differs from P005 |
+| P005 | HP Wireless Keyboard | Electronics | Computer Accessories | Matches reference; differs from P004 |
+| P006 | Defy Microwave 20L | electronics | Kitchen Appliances | Category does not match reference; differs from P007 |
+| P007 | Russell Hobbs Kettle | Appliances | Kitchen Appliances | Matches reference; differs from P006 |
+| P016 | Laundry Detergent 2L | Electronic | Cleaning | Category does not match reference; potential misclassification |
+| P017 | Dishwashing Liquid 750ml | Household | Cleaning | Matches reference; different parent from P016 |
+| P020 | Non-stick Frying Pan | Electronic | Cookware | Category does not match reference; potential misclassification |
 
-These records were checked against the original `products.csv`. Their values match the source file, confirming that the observed category values were not introduced through changes to the working copy.
+The recorded values were checked against the original `products.csv` and matched the source file.
 
-No authoritative category reference file or historical product catalogue was identified to confirm the intended classifications.
+No confirmed product-category corrections were established during Phase 3.
 
-## 9. Investigation Findings
-
-The investigation produced the following results:
+## 9. Investigation Findings and Decisions
 
 | Area investigated | Finding |
 |---|---|
 | Missing values | No missing values |
 | Product IDs | Unique and consistently formatted |
 | Product names | Unique, with no identified spacing issues |
-| Unit prices | Numeric and without zero or fractional values |
+| Unit prices | Numeric, with no zero or fractional values |
 | Duplicate prices | Repeated prices found, but no evidence of duplicate products |
-| Categories | Inconsistent capitalization and naming |
+| Categories | Two category-label variations do not match the supplied reference |
 | Subcategories | 15 distinct values; no spacing issues |
 | Category relationships | Three subcategories occur under multiple categories |
-| Source traceability | Investigated category values match the original CSV |
-
-### 9.1 Data Quality Issues and Decisions
-
-The main concern identified is inconsistent product categorisation.
+| Source traceability | Investigated values match the original CSV |
 
 The following decisions were made:
 
-1. Original category and subcategory values will remain unchanged during this investigation.
-2. `Electronic`, `Electronics`, and `electronics` will be recorded as potentially inconsistent labels.
-3. P016 and P020 will be flagged for further classification review.
-4. The category relationships involving `Computer Accessories`, `Kitchen Appliances`, and `Cleaning` will be reviewed during the cleaning phase.
-5. No category hierarchy or replacement values will be invented without business confirmation.
-6. Repeated unit prices will not be treated as duplicate products without additional evidence.
+1. Original category and subcategory values remain unchanged during Phase 3.
+2. `Electronic` and `electronics` are documented as probable inconsistent versions of `Electronics`.
+3. The four products with category values that do not match the reference are flagged for review.
+4. P016 and P020 require particular attention because their recorded categories may also indicate classification problems.
+5. The relationships involving `Computer Accessories`, `Kitchen Appliances`, and `Cleaning` remain subject to review.
+6. No category hierarchy or replacement values will be invented without business confirmation.
+7. Repeated unit prices will not be treated as duplicate products without additional evidence.
 
 ## 10. Business Requirements Relevance
 
@@ -342,11 +315,12 @@ Inconsistent category labels could affect product grouping, category-level repor
 
 The following items should be carried forward into the cleaning and validation phase:
 
-- Review category naming and capitalization.
-- Establish whether `Electronic`, `Electronics`, and `electronics` should be standardised.
-- Confirm the intended classification of P016 and P020.
+- Review and standardise category labels against the supplied category reference.
+- Confirm whether `Electronic` and `electronics` should be standardised to `Electronics`.
+- Confirm the intended classifications of P016 and P020.
 - Establish whether each subcategory must belong to one parent category.
-- Preserve original source values and document any approved transformations.
+- Preserve original source values and document all approved transformations.
+- Maintain traceability between original and cleaned product records.
 
 No changes were made to the original `products.csv` during Phase 3.
 
@@ -354,6 +328,6 @@ No changes were made to the original `products.csv` during Phase 3.
 
 The Products dataset contains 20 complete product records with unique identifiers and product names. Unit prices are consistently numeric, and no missing values or duplicate product records were established.
 
-The main data-quality concern is inconsistent product categorisation. These inconsistencies may affect catalogue consistency and product-level reporting, but their intended corrections cannot be established without business confirmation.
+The main data-quality concern is inconsistent product categorisation. Comparison with the supplied category reference identified two category-label variations that do not match the reference. These are likely naming or typing inconsistencies, but the intended classifications of individual products still require review.
 
-The dataset is therefore considered suitable for progression to the next investigation stage, with the identified category concerns retained for Phase 4 review.
+The dataset's structural and basic validity checks were satisfactory. The identified category concerns have been documented for resolution during Phase 4.
