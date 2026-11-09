@@ -73,7 +73,7 @@ The transaction ID field was examined for duplicate values and deviations from t
 | Check | Result |
 |---|---:|
 | Duplicate transaction IDs | 0 |
-| Invalid transaction ID formats | 0 |
+| Invalid transaction ID formats under the tested pattern | 0 |
 
 The observed identifier pattern was `T` followed by seven digits, for example:
 
@@ -87,12 +87,14 @@ The observed identifier pattern was `T` followed by seven digits, for example:
 =COUNTA(A2:A100001)-COUNTUNIQUE(A2:A100001)
 ```
 
-**Invalid transaction ID format:**
+**Tested transaction ID pattern:**
 ```excel
 =SUM(ARRAYFORMULA(N(NOT(REGEXMATCH(A2:A100001,"^T[0-9]+$")))))
 ```
 
-**Finding:** All transaction IDs were unique and followed the tested format.
+The tested regular expression checks for a `T` followed by one or more digits. The observed IDs contained seven digits.
+
+**Finding:** All transaction IDs were unique and passed the tested format check.
 
 ## 4. Transaction Date Investigation
 
@@ -142,9 +144,9 @@ The reference datasets were held in separate Google Sheets spreadsheets. `IMPORT
 ### 5.1 Customer References
 
 **Sales attribute:** `customer_id`  
-**Reference dataset:** `customers.csv` and `customer_export_legacy.csv`
+**Reference datasets:** `customers.csv` and `customer_export_legacy.csv`
 
-The initial comparison identified 87 sales records containing customer ID `C0012`, which could not be found in either customer dataset.
+The comparison identified 87 sales records containing customer ID `C0012`, which could not be found in either customer dataset.
 
 ### Results
 
@@ -245,15 +247,90 @@ The quantity and unit price attributes were checked for zero and negative values
 =COUNTIF(H2:H100001,"<=0")
 ```
 
-### Investigation of Negative Quantities
+### 6.1 Investigation of Negative Quantities
 
-The ten records with zero or negative quantities were extracted for closer inspection.
+The ten records identified by the quantity check were extracted for closer inspection. All ten contained negative quantities and positive recorded `total_amount` values.
 
-All ten affected records had negative quantities and positive recorded `total_amount` values.
+The records were compared against the expected calculation using absolute quantity, unit price and discount percentage.
 
-No accompanying documentation was available to explain whether negative quantities represented returns, reversals or another transaction type.
+### Absolute-Quantity Calculation Comparison
 
-**Finding:** Ten records contain negative quantities with positive recorded totals. Their meaning remains unconfirmed and requires further investigation before any correction is considered.
+| Transaction ID | Quantity | Unit Price | Discount | Recorded Total | Expected Total Using Absolute Quantity |
+|---|---:|---:|---:|---:|---:|
+| T0023443 | -3 | 199 | 0 | 398 | 597 |
+| T0024259 | -2 | 1,499 | 0 | 2,998 | 2,998 |
+| T0024902 | -2 | 399 | 0 | 1,197 | 798 |
+| T0035854 | -3 | 59 | 0 | 177 | 177 |
+| T0035929 | -2 | 249 | 0 | 1,245 | 498 |
+| T0039545 | -2 | 449 | 0 | 898 | 898 |
+| T0041790 | -1 | 39 | 0 | 39 | 39 |
+| T0049942 | -2 | 1,499 | 0.10 | 5,396.40 | 2,698.20 |
+| T0050017 | -3 | 4,999 | 0.10 | 13,497.30 | 13,497.30 |
+| T0069661 | -2 | 39 | 0 | 156 | 78 |
+
+### Results
+
+| Check | Result |
+|---|---:|
+| Negative-quantity records | 10 |
+| Records matching the absolute-quantity calculation | 4 |
+| Records not matching the absolute-quantity calculation | 6 |
+| Records with positive recorded totals | 10 |
+
+The four records matching the absolute-quantity calculation were:
+
+- T0024259
+- T0035854
+- T0039545
+- T0041790
+
+The remaining six records did not match that calculation.
+
+### 6.2 Returns Dataset Cross-Check
+
+The ten negative-quantity transactions were compared against the transaction references in `returns.csv` to investigate whether they had corresponding return records.
+
+### Results
+
+| Check | Result |
+|---|---:|
+| Negative-quantity transactions checked | 10 |
+| Transactions with a matching Returns record | 1 |
+| Transactions without a matching Returns record | 9 |
+
+The only matching transaction was `T0035854`.
+
+**Matching Returns record:**
+
+| return_id | transaction_id | customer_id | product_id | quantity_returned | return_date | reason |
+|---|---|---|---|---:|---|---|
+| R01359 | T0035854 | C0682 | P017 | 1 | 2024-06-17 | Customer Changed Mind |
+
+The corresponding Sales record contained:
+
+- Transaction ID: `T0035854`
+- Customer ID: `C0682`
+- Product ID: `P017`
+- Transaction date: `2024-06-06`
+- Quantity: `-3`
+- Unit price: R59
+- Recorded total: R177
+
+The Sales and Returns records have matching transaction, customer and product references. However, the Sales quantity is -3 while the Returns quantity is 1.
+
+The remaining nine negative-quantity transactions had no matching transaction references in the Returns dataset.
+
+### Investigation Conclusion
+
+The comparison established that negative quantities do not consistently correspond to recorded Returns transactions.
+
+Although one transaction had a matching Returns record, this does not establish that all negative quantities represent returns. Furthermore, four records matched the absolute-quantity calculation, while six did not.
+
+No source documentation was available to explain the meaning of negative quantities or the original calculation rules used for `total_amount`.
+
+**Finding:** Ten records contain negative quantities and positive recorded totals. Six also show discrepancies when compared against the absolute-quantity calculation. Their meaning and the appropriate treatment remain unconfirmed.
+
+These records will require further assessment during Phase 4. No values were changed during the investigation.
 
 ## 7. Discount Percentage Investigation
 
@@ -320,16 +397,18 @@ The affected records were extracted using:
 =FILTER(A2:J100001,ABS(J2:J100001-(G2:G100001*H2:H100001*(1-I2:I100001)))>0.01)
 ```
 
-### Investigation findings
+### Investigation Findings
 
 The 16 affected records consisted of:
 
 - **10 records** with negative quantities and positive recorded totals.
 - **6 records** with positive quantities and a discount value of `1.25`.
 
-The six records with the unusual discount value account for the six positive-quantity calculation discrepancies. The remaining ten discrepancies correspond to the negative-quantity records.
+The ten negative-quantity records were also compared using absolute quantities. Four matched that alternative calculation, while six did not.
 
-**Finding:** Sixteen records do not agree with the expected total calculation. The discrepancies are associated with the negative quantities and unusual discount values identified earlier.
+The absolute-quantity comparison was an additional investigation and did not replace the original signed-quantity calculation.
+
+**Finding:** Sixteen records do not agree with the original expected total calculation. The discrepancies are associated with negative quantities and unusual discount values.
 
 ## 9. Consolidated Investigation Results
 
@@ -338,7 +417,7 @@ The six records with the unusual discount value account for the six positive-qua
 | Dataset structure | 100,000 records and 10 attributes |
 | Completeness | No missing values |
 | Whitespace | No whitespace-only values |
-| Transaction IDs | No duplicates or tested format deviations |
+| Transaction IDs | No duplicates or deviations under the tested format |
 | Transaction dates | No invalid dates or dates outside 2023–2025 |
 | Customer references | 87 records reference unmatched customer ID C0012 |
 | Store references | All references valid |
@@ -346,6 +425,8 @@ The six records with the unusual discount value account for the six positive-qua
 | Product references | All references valid |
 | Quantity | 10 negative-quantity records |
 | Unit price | No zero or negative values |
+| Negative quantity and absolute-amount comparison | 4 matches and 6 discrepancies |
+| Negative quantity and Returns cross-check | 1 matching transaction and 9 unmatched transactions |
 | Discount percentage | 6 records contain the unusual value 1.25 |
 | Total amount | 16 calculation discrepancies |
 
@@ -358,9 +439,11 @@ However, several data quality issues require attention before the dataset can be
 The main findings are:
 
 1. **Unmatched customer reference:** Customer ID `C0012` appears in 87 sales records but is absent from both available customer datasets.
-2. **Negative quantities:** Ten records contain negative quantities and positive recorded totals. The meaning of these transactions has not been established.
-3. **Unusual discount values:** Six records contain a discount value of `1.25`, unlike the other observed discount values.
-4. **Calculation discrepancies:** Sixteen records have recorded totals that do not match the expected calculation.
+2. **Negative quantities:** Ten records contain negative quantities and positive recorded totals. Their meaning has not been established.
+3. **Returns cross-check:** Only one of the ten negative-quantity transactions has a matching record in `returns.csv`. The other nine have no matching Returns transaction.
+4. **Amount discrepancies among negative quantities:** Four of the ten negative-quantity records match the absolute-quantity calculation, while six do not.
+5. **Unusual discount values:** Six records contain a discount value of `1.25`, unlike the other observed discount values.
+6. **Calculation discrepancies:** Sixteen records have recorded totals that do not match the original expected calculation.
 
 ### Decisions for Phase 4
 
@@ -370,4 +453,4 @@ The main findings are:
 - Recalculate or correct total amounts only after the underlying quantity and discount issues have been resolved.
 - Preserve the original source data and document any changes made during cleaning.
 
-**Final investigation status:** Completed. The identified issues have been recorded for further investigation and resolution during Phase 4. No changes were made to the original Sales dataset.
+**Final investigation status:** The Sales dataset investigation has been completed. The identified issues have been documented for further investigation and resolution during Phase 4. No changes were made to the original Sales dataset.
