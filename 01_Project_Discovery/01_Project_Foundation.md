@@ -111,3 +111,73 @@ The MetroMart Retail Database Project is expected to produce the following deliv
 8. **Technical Documentation:** Documentation describing the database structure, implementation decisions, data transformations and analytical methods.
 
 **Note:** The deliverables listed above represent the project's current expected outputs. They are provisional and may be revised as the project progresses to reflect the actual work completed and the final project outcomes.
+
+## 7. Project Constraints and Assumptions
+
+### 7.1 Project Constraints
+
+The project is subject to the following constraints:
+
+1. **Available source data:** The project is limited to the operational datasets and supporting reference files supplied in the original client package.
+
+2. **Source-data quality:** The supplied datasets may contain missing, inconsistent, duplicated or invalid information that could affect cleaning, database design and analysis.
+
+3. **Historical system differences:** Changes to the business's point-of-sale system and historical store identifiers may complicate the interpretation and integration of older records.
+
+4. **Unverified business rules:** Certain business rules, including the calculation of recorded sales totals, require investigation before they can be reliably applied.
+
+5. **No existing approved database schema:** The relational database structure must be designed as part of the project because the client has not supplied an approved schema.
+
+### 7.2 Project Assumptions
+
+The project currently operates under the following assumptions:
+
+1. The supplied client package represents the source material available for the project.
+2. The reference files are intended to support the interpretation and validation of selected operational datasets, subject to investigation.
+3. The client's stated business requirements represent the expected capabilities of the proposed database solution.
+4. Where source information is incomplete or ambiguous, decisions will be based on available evidence and documented rather than treated as confirmed business rules.
+5. PostgreSQL will be used as the relational database management system for implementation.
+
+These assumptions may be reviewed or revised as additional evidence becomes available during the project.
+
+___
+## 8. Project Methodology
+
+The MetroMart Retail Database Project follows a structured, phased approach to data discovery, investigation, transformation, database development and analysis.
+
+Each phase builds on the findings and outputs of the preceding phase. This approach helps ensure that database design and implementation decisions are supported by evidence gathered during the earlier stages of the project.
+
+### 8.1 Project Phases
+
+The project is organised into the following six phases:
+
+1. **Project Discovery:** Establish the business context, review client requirements, understand the available source materials and define the project's objectives, scope and proposed approach.
+
+2. **Data Discovery and Profiling:** Examine the supplied datasets to understand their structures, contents, distributions and initial quality characteristics.
+
+3. **Data Quality Investigation:** Conduct detailed investigations into identified data-quality concerns, validate relationships and document findings and decisions.
+
+4. **Data Cleaning and Transformation:** Apply justified cleaning procedures, resolve or isolate identified issues where appropriate and prepare validated datasets for database implementation.
+
+5. **Database Design and Implementation:** Develop the relational database model and implement the database in PostgreSQL using the prepared datasets.
+
+6. **Data Analysis and Reporting:** Use SQL to analyse the available retail information and produce findings that address the client's business questions.
+
+### 8.2 Working Principles
+
+The project follows these principles throughout its execution:
+
+- Preserve original client-provided source files.
+- Base decisions on investigation and available evidence.
+- Document assumptions, findings and important decisions.
+- Separate raw source data from working and transformed datasets.
+- Validate data before using it for database implementation and analysis.
+- Maintain traceability wherever practical.
+
+### 8.3 Phase Dependencies
+
+
+The phases are designed to build upon one another. Findings from data discovery and quality investigation inform cleaning decisions, while validated data informs database design and implementation.
+
+Analytical reporting is performed using the implemented database and its validated information.
+
